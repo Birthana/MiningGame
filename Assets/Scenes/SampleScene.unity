@@ -1806,7 +1806,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   miningBoard: {fileID: 643856509}
-  GEM_SPAWN_PERCENT: 0.25
+  GEM_SPAWN_PERCENT: 0.1
   VARIENCE: 3
   LARGE_GEM_SPAWN: 0.25
   MEDIUM_GEM_SPAWN: 0.25

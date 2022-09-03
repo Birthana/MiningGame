@@ -26,9 +26,6 @@ public class GemSpawner : MonoBehaviour
     [SerializeField] private Sprite[] smallGemSprites;
     [SerializeField] private Sprite[] mediumGemSprites;
     [SerializeField] private Sprite[] largeGemSprites;
-
-    private const int MEDIUM_GEM_TILES = 4;
-    private const int LARGE_GEM_TILES = 9;
     #endregion
 
     private Vector3Int rngGemPosition;
@@ -75,14 +72,14 @@ public class GemSpawner : MonoBehaviour
                 MEDIUM_GEM_SPAWN,
                 LARGE_GEM_SPAWN);
 
-            rngGemPosition = GetRandomBoardPosition();
+            rngGemPosition = miningBoard.GetRandomBoardPosition();
 
-            if (randomGemSize == Gem.Size.SMALL)
-                spawnedGem = SpawnSmallGem();
-            else if (randomGemSize == Gem.Size.MEDIUM)
-                spawnedGem = SpawnMediumGem();
-            else if (randomGemSize == Gem.Size.LARGE)
-                spawnedGem = SpawnLargeGem();
+            if (randomGemSize == Gem.Size.SMALL && IsSmallGemAbleToSpawnAt())
+                spawnedGem = SpawnSmallGemAt();
+            else if (randomGemSize == Gem.Size.MEDIUM && IsMediumGemAbleToSpawnAt())
+                spawnedGem = SpawnGemAt(Gem.Size.MEDIUM, GetMediumGemPositions(rngGemPosition));
+            else if (randomGemSize == Gem.Size.LARGE && IsLargeGemAbleToSpawnAt())
+                spawnedGem = SpawnGemAt(Gem.Size.LARGE, GetLargeGemPositions(rngGemPosition));
 
             if (spawnedGem != null)
                 retryForEmptyBoardPosition = false;
@@ -94,50 +91,36 @@ public class GemSpawner : MonoBehaviour
     #region Function: Boolean
     private bool IsSmallGemAbleToSpawnAt()
     {
-        return miningBoard.IsBoardPositionEmpty(miningBoard.GetBoardPosition(rngGemPosition));
+        return !IsOutOfBounds(Gem.Size.SMALL);
     }
 
     private bool IsMediumGemAbleToSpawnAt()
     {
-        return !IsMediumGemOutOfBounds(rngGemPosition) &&
+        return !IsOutOfBounds(Gem.Size.MEDIUM) &&
             miningBoard.IsBoardPositionsEmpty(GetMediumGemPositions(rngGemPosition));
-    }
-
-    private bool IsMediumGemOutOfBounds(Vector3Int position)
-    {
-        return position.x == miningBoard.GetColumnCount() - 1 || position.y == miningBoard.GetRowCount() - 1;
     }
 
     private bool IsLargeGemAbleToSpawnAt()
     {
-        return !IsLargeGemOutOfBounds(rngGemPosition) &&
+        return !IsOutOfBounds(Gem.Size.LARGE) &&
             miningBoard.IsBoardPositionsEmpty(GetLargeGemPositions(rngGemPosition));
     }
 
-    private bool IsLargeGemOutOfBounds(Vector3Int position)
+    private bool IsOutOfBounds(Gem.Size size)
     {
-        return position.x == miningBoard.GetColumnCount() - 1 || 
-            position.x == miningBoard.GetColumnCount() - 2 || 
-            position.y == miningBoard.GetRowCount() - 1 || 
-            position.y == miningBoard.GetRowCount() - 2;
+        if(size == Gem.Size.LARGE)
+            return rngGemPosition.x == miningBoard.GetColumnCount() - 1 ||
+                rngGemPosition.x == miningBoard.GetColumnCount() - 2 ||
+                rngGemPosition.y == miningBoard.GetRowCount() - 1 ||
+                rngGemPosition.y == miningBoard.GetRowCount() - 2;
+        else if(size == Gem.Size.MEDIUM)
+            return rngGemPosition.x == miningBoard.GetColumnCount() - 1 || rngGemPosition.y == miningBoard.GetRowCount() - 1;
+        else
+            return miningBoard.IsBoardPositionEmpty(miningBoard.GetBoardPosition(rngGemPosition));
     }
     #endregion
 
     #region Function: Gem Spawning
-    private Vector3Int GetRandomBoardPosition()
-    {
-        return new Vector3Int(
-            Random.Range(0, miningBoard.GetColumnCount()),
-            Random.Range(0, miningBoard.GetRowCount()),
-            0);
-    }
-
-    private Gem SpawnSmallGem()
-    {
-        if (!IsSmallGemAbleToSpawnAt())
-            return null;
-        return SpawnSmallGemAt();
-    }
 
     private Gem SpawnSmallGemAt()
     {
@@ -146,26 +129,41 @@ public class GemSpawner : MonoBehaviour
         return new Gem(Gem.Size.SMALL, rngGemPosition);
     }
 
-    private Gem SpawnMediumGem()
+    private Gem SpawnGemAt(Gem.Size size, Vector3Int[] gemPositions)
     {
-        if (!IsMediumGemAbleToSpawnAt())
-            return null;
-        return SpawnMediumGemAt();
-    }
-
-    private Gem SpawnMediumGemAt()
-    {
-        int rngMediumGem = Random.Range(0, mediumGemSprites.Length / MEDIUM_GEM_TILES);
-
-        Vector3Int[] gemPositions = GetMediumGemPositions(rngGemPosition);
+        int rngGem = GetRandomGemIndex(size);
+        Sprite[] gemSprites = GetGemSprites(size);
 
         for (int i = 0; i < gemPositions.Length; i++)
         {
-            miningBoard.SetTileWithSpriteAtPosition(mediumGemSprites[rngMediumGem * MEDIUM_GEM_TILES + i], 
+            miningBoard.SetTileWithSpriteAtPosition(gemSprites[rngGem + i],
                 gemPositions[i]);
         }
 
-        return new Gem(Gem.Size.MEDIUM, rngGemPosition);
+        return new Gem(size, rngGemPosition);
+    }
+
+    private int GetRandomGemIndex(Gem.Size size)
+    {
+        int numberOfPossibleGems = 0;
+        if (size == Gem.Size.SMALL)
+            numberOfPossibleGems = smallGemSprites.Length;
+        else if (size == Gem.Size.MEDIUM)
+            numberOfPossibleGems = mediumGemSprites.Length;
+        else if (size == Gem.Size.LARGE)
+            numberOfPossibleGems = largeGemSprites.Length;
+
+        return Random.Range(0, numberOfPossibleGems / (int)size) * (int)size;
+    }
+
+    private Sprite[] GetGemSprites(Gem.Size size)
+    {
+        if (size == Gem.Size.SMALL)
+            return smallGemSprites;
+        else if (size == Gem.Size.MEDIUM)
+            return mediumGemSprites;
+        else
+            return largeGemSprites;
     }
 
     private Vector3Int[] GetMediumGemPositions(Vector3Int position)
@@ -176,28 +174,6 @@ public class GemSpawner : MonoBehaviour
             position,
             position + new Vector3Int(1, 0, 0)
         };
-    }
-
-    private Gem SpawnLargeGem()
-    {
-        if (!IsLargeGemAbleToSpawnAt())
-            return null;
-        return SpawnLargeGemAt();
-    }
-
-    private Gem SpawnLargeGemAt()
-    {
-        int rngLargeGem = Random.Range(0, largeGemSprites.Length / LARGE_GEM_TILES);
-
-        Vector3Int[] gemPositions = GetLargeGemPositions(rngGemPosition);
-
-        for (int i = 0; i < gemPositions.Length; i++)
-        {
-            miningBoard.SetTileWithSpriteAtPosition(largeGemSprites[rngLargeGem * LARGE_GEM_TILES + i],
-                gemPositions[i]);
-        }
-
-        return new Gem(Gem.Size.LARGE, rngGemPosition);
     }
 
     private Vector3Int[] GetLargeGemPositions(Vector3Int position)
@@ -214,5 +190,6 @@ public class GemSpawner : MonoBehaviour
             position + new Vector3Int(2, 0, 0),
         };
     }
+
     #endregion
 }

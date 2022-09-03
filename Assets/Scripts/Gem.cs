@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Gem
 {
-    public enum Size { SMALL, MEDIUM, LARGE };
+    public enum Size { SMALL = 1 , MEDIUM = 4, LARGE = 9 };
     private Size size_;
     private Vector3Int gemPosition;
 
