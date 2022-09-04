@@ -30,6 +30,18 @@ public class MiningBoard : MonoBehaviour
         return tile == null;
     }
 
+    public bool IsOutOfBounds(MiningGem.Size size, Vector3Int position)
+    {
+        if (size == MiningGem.Size.LARGE)       
+            return position.x == GetColumnCount() - 1 ||
+                position.x == GetColumnCount() - 2 ||
+                position.y == GetRowCount() - 1 ||
+                position.y == GetRowCount() - 2;
+        if (size == MiningGem.Size.MEDIUM)
+            return position.x == GetColumnCount() - 1 || position.y == GetRowCount() - 1;
+        return false;
+    }
+
     public Tile GetBoardPosition(Vector3Int position)
     {
         return (Tile)gemMap.GetTile(position);
@@ -44,11 +56,10 @@ public class MiningBoard : MonoBehaviour
 
     public bool IsBoardPositionsEmpty(Vector3Int[] gemPositions)
     {
-        Tile[] rngTiles = new Tile[gemPositions.Length];
         for (int i = 0; i < gemPositions.Length; i++)
         {
-            rngTiles[i] = GetBoardPosition(gemPositions[i]);
-            if (!IsBoardPositionEmpty(rngTiles[i]))
+            Tile rngTile = GetBoardPosition(gemPositions[i]);
+            if (!IsBoardPositionEmpty(rngTile))
                 return false;
         }
         return true;

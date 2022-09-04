@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 21cf8010f0484c6438145d2c7c2de8d0
+guid: 170c2b261012a184aba6d9008336995c
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,7 +117,70 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: nautilusfossilr_0
+      name: pearlr_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3819b613af72ebc4f8224f05565c2b52
+      internalID: 1809455067
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pearlr_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0eaa56588f719d142ad74fd19586062e
+      internalID: 617902091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pearlr_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 94762ce6b6622e745a9a7d8f13706ec3
+      internalID: -791540554
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pearlr_3
       rect:
         serializedVersion: 2
         x: 0
@@ -131,14 +194,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 89da492eb78ab6b46ae1a9be564619f1
-      internalID: 1177238312
+      spriteID: 158e388eaee75f84495390da61483852
+      internalID: 1625148933
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: nautilusfossilr_1
+      name: pearlr_4
       rect:
         serializedVersion: 2
         x: 32
@@ -152,14 +215,35 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5ded6d967406202408468aa6a8fb1ea1
-      internalID: 60558476
+      spriteID: 935be22c6ce7e6242b7ecd55cecf6880
+      internalID: -1293850211
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: nautilusfossilr_2
+      name: pearlr_5
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 854315048eb2f784c8f41397a47de053
+      internalID: -284389018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pearlr_6
       rect:
         serializedVersion: 2
         x: 0
@@ -173,14 +257,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0db567249cfada64c882b46336147437
-      internalID: -1553228522
+      spriteID: e5b948d662df4b947a7264bf309b7655
+      internalID: 1487094424
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: nautilusfossilr_3
+      name: pearlr_7
       rect:
         serializedVersion: 2
         x: 32
@@ -194,8 +278,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d7cfe6d2044d66f4cb3b36353aa860db
-      internalID: 110019974
+      spriteID: 5486f264e1878eb4fbbb4553906536d7
+      internalID: 1988569269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: pearlr_8
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3212bd3aac502ac4e8c3d809f0766061
+      internalID: 254576500
       vertices: []
       indices: 
       edges: []
@@ -211,10 +316,15 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      nautilusfossilr_1: 60558476
-      nautilusfossilr_0: 1177238312
-      nautilusfossilr_2: -1553228522
-      nautilusfossilr_3: 110019974
+      pearlr_7: 1988569269
+      pearlr_6: 1487094424
+      pearlr_4: -1293850211
+      pearlr_8: 254576500
+      pearlr_0: 1809455067
+      pearlr_3: 1625148933
+      pearlr_5: -284389018
+      pearlr_1: 617902091
+      pearlr_2: -791540554
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
