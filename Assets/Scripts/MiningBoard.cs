@@ -7,6 +7,7 @@ public class MiningBoard : MonoBehaviour
     [SerializeField] private int NUMBER_OF_COLUMNS;
     [SerializeField] private int NUMBER_OF_ROWS;
 
+    #region Function: Getters & Setters
     public int GetColumnCount()
     {
         return NUMBER_OF_COLUMNS;
@@ -17,9 +18,12 @@ public class MiningBoard : MonoBehaviour
         return NUMBER_OF_ROWS;
     }
 
-    public bool IsBoardPositionEmpty(Tile tile)
+    public Vector3Int GetRandomBoardPosition()
     {
-        return tile == null;
+        return new Vector3Int(
+            Random.Range(0, GetColumnCount()),
+            Random.Range(0, GetRowCount()),
+            0);
     }
 
     public Tile GetBoardPosition(Vector3Int position)
@@ -27,23 +31,33 @@ public class MiningBoard : MonoBehaviour
         return (Tile)gemMap.GetTile(position);
     }
 
-    public void SetTileWithSpriteAtPosition(Sprite sprite, Vector3Int position)
+    public void SetBoardPosition(Sprite sprite, Vector3Int position)
     {
         Tile newTile = ScriptableObject.CreateInstance<Tile>();
         newTile.sprite = sprite;
         gemMap.SetTile(position, newTile);
     }
+    #endregion
 
+    #region Function: Boolean
+    public bool IsBoardPositionEmpty(Tile tile)
+    {
+        return tile == null;
+    }
     public bool IsBoardPositionsEmpty(Vector3Int[] gemPositions)
     {
-        Tile[] rngTiles = new Tile[gemPositions.Length];
-        for (int i = 0; i < gemPositions.Length; i++)
+        foreach (Vector3Int position in gemPositions)
         {
-            rngTiles[i] = GetBoardPosition(gemPositions[i]);
-            if (!IsBoardPositionEmpty(rngTiles[i]))
+            Tile rngTile = GetBoardPosition(position);
+            if (!IsBoardPositionEmpty(rngTile))
                 return false;
         }
         return true;
     }
 
+    public bool IsOutOfBounds(MiningGem gem)
+    {
+        return gem.IsOutOfBounds(GetColumnCount(), GetRowCount());
+    }
+    #endregion
 }
