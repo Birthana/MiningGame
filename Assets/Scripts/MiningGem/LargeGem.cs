@@ -9,6 +9,12 @@ public class LargeGem : MiningGem
         gemSprites = Resources.LoadAll<Sprite>("LargeGem");
     }
 
+    public override bool IsOutOfBounds(int col, int row)
+    {
+        return gemPosition.x == col - 1|| gemPosition.x == col - 2 ||
+            gemPosition.y == row - 1 || gemPosition.y == row - 2;
+    }
+
     public override Sprite[] GetRandomGemSprites()
     {
         int rngGem = Random.Range(0, gemSprites.Length / (int)size_) * (int)size_;

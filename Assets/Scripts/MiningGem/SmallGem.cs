@@ -8,6 +8,11 @@ public class SmallGem : MiningGem
         gemSprites = Resources.LoadAll<Sprite>("SmallGem");
     }
 
+    public override bool IsOutOfBounds(int col, int row)
+    {
+        return false;
+    }
+
     public override Sprite[] GetRandomGemSprites()
     {
         int rngGem = Random.Range(0, gemSprites.Length / (int)size_) * (int)size_;

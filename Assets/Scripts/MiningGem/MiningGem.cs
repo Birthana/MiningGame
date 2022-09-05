@@ -30,6 +30,8 @@ public abstract class MiningGem
         return gemPosition;
     }
 
+    public abstract bool IsOutOfBounds(int col, int row);
+
     public abstract Sprite[] GetRandomGemSprites();
 
     public abstract Vector3Int[] GetGemPositions();

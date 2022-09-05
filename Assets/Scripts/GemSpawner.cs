@@ -17,10 +17,8 @@ public class GemSpawner : MonoBehaviour
     [SerializeField] private float LARGE_GEM_SPAWN;
     [Range(0, .5f)]
     [SerializeField] private float MEDIUM_GEM_SPAWN;
-    private float SMALL_GEM_SPAWN;
+                     private float SMALL_GEM_SPAWN;
     #endregion
-
-    private Vector3Int rngGemPosition;
 
     #region Function: Setup
     private void Start()
@@ -55,45 +53,44 @@ public class GemSpawner : MonoBehaviour
 
     private MiningGem SpawnRandomSizedGem()
     {
-        MiningGem rngGem = null;
-        bool retryForEmptyBoardPosition = true;
-        while (retryForEmptyBoardPosition)
+        bool retryForValidGem = true;
+        while (retryForValidGem)
         {
-            rngGem = MiningGem.GetRandomGem(
+            MiningGem rngGem = MiningGem.GetRandomGem(
                 SMALL_GEM_SPAWN,
                 MEDIUM_GEM_SPAWN,
                 LARGE_GEM_SPAWN,
                 miningBoard.GetRandomBoardPosition());
 
-            if (IsGemAbleToSpawnAt(rngGem))
+            if (IsAbleToSpawn(rngGem))
             {
-                SpawnGemAt(rngGem);
-                retryForEmptyBoardPosition = false;
+                SpawnInMiningBoard(rngGem);
+                return rngGem;
             }
         }
-        return rngGem;
+        return null;
     }
     #endregion
 
     #region Function: Boolean
 
-    private bool IsGemAbleToSpawnAt(MiningGem gem)
+    private bool IsAbleToSpawn(MiningGem gem)
     {
-        return !miningBoard.IsOutOfBounds(gem.GetSize(), gem.GetGemPosition()) &&
+        return !miningBoard.IsOutOfBounds(gem) &&
             miningBoard.IsBoardPositionsEmpty(gem.GetGemPositions());
     }
     #endregion
 
     #region Function: Gem Spawning
 
-    private void SpawnGemAt(MiningGem gem)
+    private void SpawnInMiningBoard(MiningGem gem)
     {
         Sprite[] gemSprites = gem.GetRandomGemSprites();
         Vector3Int[] gemPositions = gem.GetGemPositions();
 
         for (int i = 0; i < gemPositions.Length; i++)
         {
-            miningBoard.SetTileWithSpriteAtPosition(gemSprites[i], gemPositions[i]);
+            miningBoard.SetBoardPosition(gemSprites[i], gemPositions[i]);
         }
     }
     #endregion
