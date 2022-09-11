@@ -14,10 +14,9 @@ public abstract class MiningGem
         float rngNumber = Random.value;
         if (rngNumber < LargePercent)
             return new LargeGem(rngGemPosition);
-        else if (rngNumber - LargePercent < mediumPercent)
+        if (rngNumber - LargePercent < mediumPercent)
             return new MediumGem(rngGemPosition);
-        else
-            return new SmallGem(rngGemPosition);
+        return new SmallGem(rngGemPosition);
     }
 
     public Size GetSize()

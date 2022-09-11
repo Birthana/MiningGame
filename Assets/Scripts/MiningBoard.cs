@@ -3,11 +3,16 @@ using UnityEngine.Tilemaps;
 
 public class MiningBoard : MonoBehaviour
 {
-    [SerializeField] private Tilemap gemMap;
+    [SerializeField] private Tilemap board;
     [SerializeField] private int NUMBER_OF_COLUMNS;
     [SerializeField] private int NUMBER_OF_ROWS;
 
     #region Function: Getters & Setters
+    public Vector3Int WorldToTilePosition(Vector3 worldPosition)
+    {
+        return board.WorldToCell(worldPosition);
+    }
+
     public int GetColumnCount()
     {
         return NUMBER_OF_COLUMNS;
@@ -28,28 +33,33 @@ public class MiningBoard : MonoBehaviour
 
     public Tile GetBoardPosition(Vector3Int position)
     {
-        return (Tile)gemMap.GetTile(position);
+        return (Tile)board.GetTile(position);
     }
 
     public void SetBoardPosition(Sprite sprite, Vector3Int position)
     {
         Tile newTile = ScriptableObject.CreateInstance<Tile>();
         newTile.sprite = sprite;
-        gemMap.SetTile(position, newTile);
+        board.SetTile(position, newTile);
+    }
+
+    public void SetBoardPositionToEmpty(Vector3Int position)
+    {
+        board.SetTile(position, null);
     }
     #endregion
 
     #region Function: Boolean
-    public bool IsBoardPositionEmpty(Tile tile)
+    public bool IsBoardPositionEmpty(Vector3Int position)
     {
-        return tile == null;
+        return !board.HasTile(position);
     }
-    public bool IsBoardPositionsEmpty(Vector3Int[] gemPositions)
+
+    public bool IsBoardPositionsEmpty(Vector3Int[] positions)
     {
-        foreach (Vector3Int position in gemPositions)
+        foreach (Vector3Int position in positions)
         {
-            Tile rngTile = GetBoardPosition(position);
-            if (!IsBoardPositionEmpty(rngTile))
+            if (!IsBoardPositionEmpty(position))
                 return false;
         }
         return true;
