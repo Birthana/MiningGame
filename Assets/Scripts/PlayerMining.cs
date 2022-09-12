@@ -4,62 +4,15 @@ using UnityEngine.Tilemaps;
 
 public class PlayerMining : MonoBehaviour
 {
-    public Camera cam;
-    public Wall wall;
-    public bool gameEnd;
+    private Camera cam;
+    [SerializeField] private Tool tool;
+    [SerializeField] private Wall wall;
+    private bool gameEnd;
 
-    private Vector3Int[] obsidian = new Vector3Int[] {
-        new Vector3Int(0, 0, 0),
-        new Vector3Int(1, 0, 0),
-        new Vector3Int(-1, 0, 0),
-        new Vector3Int(0, 1, 0),
-        new Vector3Int(0, -1, 0)
-    };
-
-    private Vector3Int[] diamond = new Vector3Int[]
+    private void Start()
     {
-        new Vector3Int(0, 0, 0),
-        new Vector3Int(1, 0, 0),
-        new Vector3Int(-1, 0, 0),
-        new Vector3Int(0, 1, 0),
-        new Vector3Int(0, -1, 0),
-        new Vector3Int(1, 0, 0),
-        new Vector3Int(-1, 0, 0),
-        new Vector3Int(0, 1, 0),
-        new Vector3Int(0, -1, 0)
-    };
-
-    private Vector3Int[] innerRing = new Vector3Int[]
-    {
-        new Vector3Int(1, 0, 0),
-        new Vector3Int(0, 1, 0),
-        new Vector3Int(-1, 0, 0),
-        new Vector3Int(0, -1, 0),
-        new Vector3Int(1, 1, 0),
-        new Vector3Int(-1, -1, 0),
-        new Vector3Int(-1, 1, 0),
-        new Vector3Int(1, -1, 0)
-    };
-
-    private Vector3Int[] outerRing = new Vector3Int[]
-    {
-        new Vector3Int(2, 0, 0),
-        new Vector3Int(0, 2, 0),
-        new Vector3Int(-2, 0, 0),
-        new Vector3Int(0, -2, 0),
-        new Vector3Int(2, 2, 0),
-        new Vector3Int(-2, -2, 0),
-        new Vector3Int(-2, 2, 0),
-        new Vector3Int(2, -2, 0),
-        new Vector3Int(1, 2, 0),
-        new Vector3Int(2, 1, 0),
-        new Vector3Int(-1, 2, 0),
-        new Vector3Int(2, -1, 0),
-        new Vector3Int(-2, 1, 0),
-        new Vector3Int(-2, -1, 0),
-        new Vector3Int(1, -2, 0),
-        new Vector3Int(-1, -2, 0)
-    };
+        cam = Camera.main;
+    }
 
     private void Update()
     {
@@ -71,105 +24,14 @@ public class PlayerMining : MonoBehaviour
 
     public void Mine()
     {
-        string toolSpriteName = "tools_9";
         Vector3Int tilePosition = ScreenToTilePosition(Input.mousePosition);
         if (wall.HasWall(tilePosition))
         {
-            switch (toolSpriteName)
-            {
-                case "tools_9":
-                    //Wood Hammer
-                    BaseTool(true, 2, 0, 5, 1);
-                    break;
-                case "tools_11":
-                    //Copper Hammer
-                    BaseTool(true, 3, 0, 10, 0);
-                    break;
-                case "tools_14":
-                    //Bone Hammer
-                    wall.RemoveTile(tilePosition);
-                    BaseTool(true, 2, 0, 10, 0);
-                    break;
-                case "tools_12":
-                    //Gold Hammer
-                    BaseTool(true, 2, 0, 30, 20);
-                    break;
-                case "tools_10":
-                    //Iron Hammer
-                    BaseTool(true, 4, 3, 10, 0);
-                    break;
-                case "tools_16":
-                    //Obsidian Hammer
-                    foreach (Vector3Int position in obsidian)
-                    {
-                        wall.RemoveTile(tilePosition + position);
-                    }
-                    BaseTool(true, 2, 0, 10, 0);
-                    break;
-                case "tools_17":
-                    //Magic Hammer
-                    BaseTool(true, 2, 0, 45, 35);
-                    break;
-                case "tools_13":
-                    //Steel Hammer
-                    BaseTool(true, 5, 6, 10, 0);
-                    break;
-                case "tools_15":
-                    //Diamond Hammer
-                    foreach (Vector3Int position in diamond)
-                    {
-                        wall.RemoveTile(tilePosition + position);
-                    }
-                    BaseTool(true, 2, 0, 10, 0);
-                    break;
-                case "tools_0":
-                    //Wood Pickaxe
-                    BaseTool(false, 0, 0, 5, 5);
-                    break;
-                case "tools_2":
-                    //Copper Pickaxe
-                    BaseTool(false, 1, 0, 0, 0);
-                    break;
-                case "tools_5":
-                    //Bone Pickaxe
-                    BaseTool(false, 0, 0, 0, 0);
-                    BaseTool(false, 0, 0, 0, 0);
-                    break;
-                case "tools_3":
-                    //Gold Pickaxe
-                    BaseTool(false, 0, 0, 10, 10);
-                    break;
-                case "tools_1":
-                    //Iron Pickaxe
-                    BaseTool(false, 2, 1, 0, 0);
-                    break;
-                case "tools_7":
-                    //Obsidian Pickaxe
-                    foreach (Vector3Int position in obsidian)
-                    {
-                        wall.RemoveTile(tilePosition + position);
-                    }
-                    BaseTool(false, 0, 0, 0, 0);
-                    break;
-                case "tools_8":
-                    //Magic Pickaxe
-                    BaseTool(false, 0, 0, 15, 15);
-                    break;
-                case "tools_4":
-                    //Steel Pickaxe
-                    BaseTool(false, 3, 2, 0, 0);
-                    break;
-                case "tools_6":
-                    //Diamond Pickaxe
-                    foreach (Vector3Int position in diamond)
-                    {
-                        wall.RemoveTile(tilePosition + position);
-                    }
-                    BaseTool(false, 0, 0, 0, 0);
-                    break;
-            }
+            wall.RemoveTile(tilePosition);
+            MineTiles(tool.GetAvailablePositions(tilePosition), 
+                tool.GetExtraAvailablePositions(tilePosition));
+            wall.Damage(tool.GetDamage());
         }
-
     }
 
     public Vector3Int ScreenToTilePosition(Vector3 clickedPosition)
@@ -179,48 +41,44 @@ public class PlayerMining : MonoBehaviour
         return tilePosition;
     }
 
-    public void BaseTool(bool isHammer, int innerRingTiles, int outerRingTiles, 
-        int extraInnerTilePercantage, int extraOuterTilePercantage)
+    public void MineTiles(Vector3Int[] availablePositions, Vector3Int[] extraPositions)
     {
-        Vector3Int tilePosition = ScreenToTilePosition(Input.mousePosition);
-        wall.RemoveTile(tilePosition);
-
-        MineRandomTiles(tilePosition, innerRingTiles, extraInnerTilePercantage, innerRing);
-        MineRandomTiles(tilePosition, outerRingTiles, extraOuterTilePercantage, outerRing);
-
-        if (isHammer)
-            wall.Damage(3);
-        else
-            wall.Damage(1);
-
+        int maxExtraTiles = tool.GetMaxExtraTiles();
+        int currentExtraTiles = MineRandomTiles(tool.GetTilesToDestroy(), maxExtraTiles, availablePositions);
+        MineRandomTiles(tool.GetExtraTilesToDestroyed(), currentExtraTiles, extraPositions);
     }
 
-    private List<int> GetRandomIndexes(int numberOfRandomNumbers, int max)
+    private List<int> GetRandomIndexes(int numberOfRandomIndexes, int max)
     {
-        List<int> rngNumbers = new List<int>();
+        List<int> rngIndexes = new List<int>();
         int rngNumber;
-        for (int i = 0; i < numberOfRandomNumbers; i++)
+        for (int i = 0; i < numberOfRandomIndexes; i++)
         {
             do
             {
                 rngNumber = Random.Range(0, max);
-            } while (rngNumbers.Contains(rngNumber));
-            rngNumbers.Add(rngNumber);
+            } while (rngIndexes.Contains(rngNumber));
+            rngIndexes.Add(rngNumber);
         }
-        return rngNumbers;
+        return rngIndexes;
     }
 
-    private void MineRandomTiles(Vector3Int tilePosition, int tilesToMine, int percentageToMine, Vector3Int[] availableTiles)
+    private int MineRandomTiles(int tilesToMine, int maxExtraTiles, Vector3Int[] availableTiles)
     {
         List<int> rngTiles = GetRandomIndexes(tilesToMine, availableTiles.Length);
+        int remainingExtraTiles = maxExtraTiles;
         for (int i = 0; i < availableTiles.Length; i++)
         {
             if (rngTiles.Contains(i))
             {
-                wall.RemoveTile(tilePosition + availableTiles[i]);
+                wall.RemoveTile(availableTiles[i]);
                 continue;
             }
-            wall.ExtraRemoveTile(tilePosition + availableTiles[i], percentageToMine);
+            if (remainingExtraTiles == 0)
+                continue;
+            if (wall.ExtraRemoveTile(availableTiles[i], tool.GetExtraTilesPercentage()))
+                remainingExtraTiles--;
         }
+        return remainingExtraTiles;
     }
 }

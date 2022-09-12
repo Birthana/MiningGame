@@ -46,11 +46,14 @@ public class Wall : MonoBehaviour
         }
     }
 
-    public void ExtraRemoveTile(Vector3Int position, int chance)
+    public bool ExtraRemoveTile(Vector3Int position, float percentage)
     {
-        int extra = Random.Range(1, 100);
-        if (extra <= chance)
+        if (percentage >= Random.Range(0, 1f))
+        {
             RemoveTile(position);
+            return true;
+        }
+        return false;
     }
 
     public void Damage(int damage)

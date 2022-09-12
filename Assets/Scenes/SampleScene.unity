@@ -1820,9 +1820,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b5e5ab6259d12c4bb7b6662af02676e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 519420031}
+  tool: {fileID: 11400000, guid: ba6e9860c753bd34689a4f9eae125888, type: 2}
   wall: {fileID: 1907689268}
-  gameEnd: 0
 --- !u!4 &610001608
 Transform:
   m_ObjectHideFlags: 0
