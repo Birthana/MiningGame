@@ -7,7 +7,7 @@ public abstract class Tool : ScriptableObject
     [Header("Stats")]
     [SerializeField] private int damage;
     [SerializeField] private int tilesToDestroy;
-    [SerializeField] private int extraTilesToDestroyed;
+    [SerializeField] private int extraTilesToDestroy;
     [Range(0, 1)]
     [SerializeField] private float extraTilesPercentage;
     [SerializeField] private int maxExtraTiles;
@@ -16,7 +16,7 @@ public abstract class Tool : ScriptableObject
 
     public int GetTilesToDestroy() { return tilesToDestroy; }
 
-    public int GetExtraTilesToDestroyed() { return extraTilesToDestroyed; }
+    public int GetExtraTilesToDestroy() { return extraTilesToDestroy; }
 
     public float GetExtraTilesPercentage() { return extraTilesPercentage; }
 

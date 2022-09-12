@@ -7,6 +7,8 @@ public class PlayerMining : MonoBehaviour
     private Camera cam;
     [SerializeField] private Tool tool;
     [SerializeField] private Wall wall;
+
+    private int remainingExtraTiles = 0;
     private bool gameEnd;
 
     private void Start()
@@ -22,18 +24,6 @@ public class PlayerMining : MonoBehaviour
         }
     }
 
-    public void Mine()
-    {
-        Vector3Int tilePosition = ScreenToTilePosition(Input.mousePosition);
-        if (wall.HasWall(tilePosition))
-        {
-            wall.RemoveTile(tilePosition);
-            MineTiles(tool.GetAvailablePositions(tilePosition), 
-                tool.GetExtraAvailablePositions(tilePosition));
-            wall.Damage(tool.GetDamage());
-        }
-    }
-
     public Vector3Int ScreenToTilePosition(Vector3 clickedPosition)
     {
         Vector3 worldPosition = cam.ScreenToWorldPoint(clickedPosition);
@@ -41,11 +31,29 @@ public class PlayerMining : MonoBehaviour
         return tilePosition;
     }
 
-    public void MineTiles(Vector3Int[] availablePositions, Vector3Int[] extraPositions)
+    public void Mine()
     {
-        int maxExtraTiles = tool.GetMaxExtraTiles();
-        int currentExtraTiles = MineRandomTiles(tool.GetTilesToDestroy(), maxExtraTiles, availablePositions);
-        MineRandomTiles(tool.GetExtraTilesToDestroyed(), currentExtraTiles, extraPositions);
+        Vector3Int selectedPosition = ScreenToTilePosition(Input.mousePosition);
+        if (wall.HasWall(selectedPosition))
+        {
+            remainingExtraTiles = tool.GetMaxExtraTiles();
+            wall.RemoveTile(selectedPosition);
+            MineGuaranteeTilesAround(selectedPosition);
+            MineExtraTilesAround(selectedPosition);
+            wall.Damage(tool.GetDamage());
+        }
+    }
+
+    public void MineGuaranteeTilesAround(Vector3Int selectedPosition)
+    {
+        MineSurroundingTiles(tool.GetTilesToDestroy(), 
+            tool.GetAvailablePositions(selectedPosition));
+    }
+
+    public void MineExtraTilesAround(Vector3Int selectedPosition)
+    {
+        MineSurroundingTiles(tool.GetExtraTilesToDestroy(), 
+            tool.GetExtraAvailablePositions(selectedPosition));
     }
 
     private List<int> GetRandomIndexes(int numberOfRandomIndexes, int max)
@@ -63,22 +71,25 @@ public class PlayerMining : MonoBehaviour
         return rngIndexes;
     }
 
-    private int MineRandomTiles(int tilesToMine, int maxExtraTiles, Vector3Int[] availableTiles)
+    private void MineSurroundingTiles(int tilesToMine, Vector3Int[] surroundingTiles)
     {
-        List<int> rngTiles = GetRandomIndexes(tilesToMine, availableTiles.Length);
-        int remainingExtraTiles = maxExtraTiles;
-        for (int i = 0; i < availableTiles.Length; i++)
+        List<int> rngTiles = GetRandomIndexes(tilesToMine, surroundingTiles.Length);
+        for (int i = 0; i < surroundingTiles.Length; i++)
         {
             if (rngTiles.Contains(i))
             {
-                wall.RemoveTile(availableTiles[i]);
+                wall.RemoveTile(surroundingTiles[i]);
                 continue;
             }
-            if (remainingExtraTiles == 0)
-                continue;
-            if (wall.ExtraRemoveTile(availableTiles[i], tool.GetExtraTilesPercentage()))
-                remainingExtraTiles--;
+            ChanceToMineTiles(surroundingTiles[i]);
         }
-        return remainingExtraTiles;
+    }
+
+    private void ChanceToMineTiles(Vector3Int position)
+    {
+        if (remainingExtraTiles == 0)
+            return;
+        if (wall.ExtraRemoveTile(position, tool.GetExtraTilesPercentage()))
+            remainingExtraTiles--;
     }
 }
